@@ -1,12 +1,15 @@
 import styles from './Filter.module.css';
 import shortid from 'shortid';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import contactsActions from '../../redux/contacts/contacts-actions';
 import contactsSelectors from '../../redux/contacts/contacts-selectors';
 
-function Filter({ value = '', onChange }) {
+export default function Filter() {
   const filterId = shortid.generate();
+  const value = useSelector(contactsSelectors.getFilter);
+  const dispatch = useDispatch();
+  const onChange = e => dispatch(contactsActions.changeFilter(e.target.value));
+
   return (
     <div className={styles.inputBlock}>
       <label htmlFor={filterId}>Find contacts by name</label>
@@ -14,18 +17,3 @@ function Filter({ value = '', onChange }) {
     </div>
   );
 }
-
-const mapStateToProps = state => ({
-  value: contactsSelectors.getFilter(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  onChange: e => dispatch(contactsActions.changeFilter(e.target.value)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
-
-Filter.propTypes = {
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-};

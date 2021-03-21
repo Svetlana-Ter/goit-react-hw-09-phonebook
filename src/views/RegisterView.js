@@ -1,79 +1,74 @@
 import authOperations from '../redux/auth/auth-operations';
-import { Component } from 'react';
-import { connect } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Button, TextField } from '@material-ui/core';
 import styles from '../App.module.css';
 
-class RegisterView extends Component {
-  state = {
-    name: '',
-    email: '',
-    password: '',
+export default function RegisterView() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+
+  const handleNameChange = event => {
+    setName(event.target.value);
   };
 
-  handleChange = ({ target: { name, value } }) => {
-    this.setState({
-      [name]: value,
-    });
+  const handleEmailChange = event => {
+    setEmail(event.target.value);
   };
 
-  handleSubmit = e => {
+  const handlePasswordChange = event => {
+    setPassword(event.target.value);
+  };
+
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.onRegister(this.state);
-    this.setState({
-      name: '',
-      email: '',
-      password: '',
-    });
+    dispatch(authOperations.register({ name, email, password }));
+    setName('');
+    setEmail('');
+    setPassword('');
   };
 
-  render() {
-    const { name, email, password } = this.state;
-    return (
-      <div>
-        <h1>Страница регистрации</h1>
+  return (
+    <div>
+      <h1>Страница регистрации</h1>
 
-        <form onSubmit={this.handleSubmit} className={styles.form} autoComplete='off'>
-          <TextField
-            type='text'
-            name='name'
-            value={name}
-            onChange={this.handleChange}
-            variant='outlined'
-            label='Имя'
-            className={styles.authInput}
-          />
+      <form onSubmit={handleSubmit} className={styles.form} autoComplete='off'>
+        <TextField
+          type='text'
+          name='name'
+          value={name}
+          onChange={handleNameChange}
+          variant='outlined'
+          label='Имя'
+          className={styles.authInput}
+        />
 
-          <TextField
-            type='email'
-            name='email'
-            value={email}
-            onChange={this.handleChange}
-            variant='outlined'
-            label='Почта'
-            className={styles.authInput}
-          />
+        <TextField
+          type='email'
+          name='email'
+          value={email}
+          onChange={handleEmailChange}
+          variant='outlined'
+          label='Почта'
+          className={styles.authInput}
+        />
 
-          <TextField
-            type='password'
-            name='password'
-            value={password}
-            onChange={this.handleChange}
-            variant='outlined'
-            label='Пароль'
-            className={styles.authInput}
-          />
+        <TextField
+          type='password'
+          name='password'
+          value={password}
+          onChange={handlePasswordChange}
+          variant='outlined'
+          label='Пароль'
+          className={styles.authInput}
+        />
 
-          <Button type='submit' variant='contained' color='primary'>
-            Зарегистрироваться
-          </Button>
-        </form>
-      </div>
-    );
-  }
+        <Button type='submit' variant='contained' color='primary'>
+          Зарегистрироваться
+        </Button>
+      </form>
+    </div>
+  );
 }
-const mapDispatchToProps = {
-  onRegister: authOperations.register,
-};
-
-export default connect(null, mapDispatchToProps)(RegisterView);
